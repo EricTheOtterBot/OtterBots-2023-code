@@ -97,7 +97,8 @@ public class balanceAuto extends SequentialCommandGroup {
             stopclawcommand2,
             retractcommand, 
             lowerliftcommand,
-            swerveControllerCommand
+            balance1command, 
+            balance2command
         );
     }
 }
