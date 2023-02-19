@@ -2,6 +2,14 @@ package frc.robot.autos;
 
 import frc.robot.Constants;
 import frc.robot.commands.AutoOpenClaw;
+import frc.robot.commands.balancing.AutoBalance;
+import frc.robot.commands.balancing.AutoBalance2;
+import frc.robot.commands.balancing.AutoBalance3;
+import frc.robot.commands.balancing.AutoBalance4;
+import frc.robot.commands.balancing.AutoBalance5;
+import frc.robot.commands.balancing.AutoBalance6;
+import frc.robot.commands.balancing.AutoBalance7;
+import frc.robot.commands.balancing.AutoBalance8;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Claw;
@@ -78,17 +86,30 @@ public class balanceAuto extends SequentialCommandGroup {
         Command extendcommand = new AutoExtend(s_lift);
         Command retractcommand = new AutoRetract(s_lift);
         Command lowerliftcommand = new AutoLowerLift(s_lift);
-        Command waitcommand = new WaitCommand(0.5);
-        Command waitcommand2 = new WaitCommand(0.5);
-        Command waitcommand3 = new WaitCommand(0.5);
+        Command waitcommand = new WaitCommand(0.4);
+        Command waitcommand2 = new WaitCommand(0.4);
+        Command waitcommand3 = new WaitCommand(0.1);
+        Command waitcommand4 = new WaitCommand(0.1);
+        Command waitcommand5 = new WaitCommand(0.1);
+        Command waitcommand6 = new WaitCommand(0.1);
+        Command waitcommand7 = new WaitCommand(0.1);
+        Command waitcommand8 = new WaitCommand(0.1);
+        Command waitcommand9 = new WaitCommand(0.1);
+        Command waitcommand10 = new WaitCommand(0.1);
         Command closeclawcommand = new AutoOpenClaw(s_Claw);
         Command stopclawcommand2 = new AutoStopClaw(s_Claw);
         Command balance1command = new AutoBalance(s_Swerve);
         Command balance2command = new AutoBalance2(s_Swerve);
+        Command balance3command = new AutoBalance3(s_Swerve);
+        Command balance4command = new AutoBalance4(s_Swerve);
+        Command balance5command = new AutoBalance5(s_Swerve);
+        Command balance6command = new AutoBalance6(s_Swerve);
+        Command balance7command = new AutoBalance7(s_Swerve);
+        Command balance8command = new AutoBalance8(s_Swerve);
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(firstTrajectory.getInitialPose())), 
-            //liftcommand,
+
             extendcommand,
             openclawcommand, 
             waitcommand, 
@@ -97,8 +118,21 @@ public class balanceAuto extends SequentialCommandGroup {
             stopclawcommand2,
             retractcommand, 
             lowerliftcommand,
-            balance1command, 
-            balance2command
+            balance1command,
+            waitcommand4,  
+            balance2command,
+            waitcommand5, 
+            balance3command, 
+            waitcommand6, 
+            balance4command,
+            waitcommand7,  
+            balance5command, 
+            waitcommand8, 
+            balance6command, 
+            waitcommand9, 
+            balance7command, 
+            waitcommand10, 
+            balance8command
         );
     }
 }

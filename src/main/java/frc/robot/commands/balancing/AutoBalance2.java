@@ -18,7 +18,7 @@ public class AutoBalance2 extends CommandBase {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = -0.095;
+        double translationVal = -0.15;
         double strafeVal = 0;
         double rotationVal = 0;
 
@@ -42,7 +42,7 @@ public class AutoBalance2 extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        double translationVal = 0;
+        double translationVal = -0.2;
         double strafeVal = 0;
         double rotationVal = 0;
 
