@@ -105,6 +105,12 @@ public class Swerve extends SubsystemBase {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 
+
+
+
+    public double getPitch() {
+        return gyro.getRoll();
+    }
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
@@ -120,7 +126,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("EncoderReadingBL", mSwerveMods[2].getAbsoluteEncoderRad());
         SmartDashboard.putNumber("EncoderReadingBR", mSwerveMods[3].getAbsoluteEncoderRad());
         SmartDashboard.putString("RobotHeading", this.getYaw().toString());
-
+        SmartDashboard.putNumber("Robot Roll", this.getPitch());
+        
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
