@@ -7,20 +7,33 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class AutoBalance7 extends CommandBase {    
-    private Swerve s_Swerve;    
+public class AutoAlign extends CommandBase {    
+    private Swerve s_Swerve;
+    private double translation; 
+    private double strafe; 
+    private double rotation;
 
-    public AutoBalance7(Swerve s_Swerve) {
+    public AutoAlign(Swerve s_Swerve, double translation, double strafe, double rotation) {
         this.s_Swerve = s_Swerve;
+        this.translation = translation; 
+        this.strafe = strafe;
+        this.rotation = rotation;
         addRequirements(s_Swerve);
     }
 
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = -0.65;
-        double strafeVal = 0;
-        double rotationVal = 0;
+        double translationVal = translation;
+        double strafeVal = strafe;
+        double rotationVal = rotation;
+        double gyroAngle;
+
+        gyroAngle = s_Swerve.getYaw2();
+
+        if(gyroAngle > 0) {
+            rotationVal = -rotationVal;
+        }
 
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
@@ -32,13 +45,26 @@ public class AutoBalance7 extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return true;
+        double gyroAngle;
+        gyroAngle = s_Swerve.getYaw2();
+
+        if(gyroAngle > -5.0) {
+            if(gyroAngle < 5.0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
     }
 
 
     @Override
     public void end(boolean interrupted) {
-        double translationVal = -0.7;
+        double translationVal = 0;
         double strafeVal = 0;
         double rotationVal = 0;
 

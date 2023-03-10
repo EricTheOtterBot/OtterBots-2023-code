@@ -1,6 +1,9 @@
 package frc.robot.autos;
 
 import frc.robot.Constants;
+import frc.robot.commands.*;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Swerve;
 
 import java.util.List;
@@ -13,14 +16,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class exampleAuto extends SequentialCommandGroup {
-    public exampleAuto(Swerve s_Swerve){
+public class AutoOnePiece extends SequentialCommandGroup {
+    public AutoOnePiece(Swerve s_Swerve, Lift s_ClawLift, Claw s_Claw, Timer m_timer){
 
         TrajectoryConfig configB =
             new TrajectoryConfig(
@@ -53,13 +57,32 @@ public class exampleAuto extends SequentialCommandGroup {
 
 
 
-        Command waitcommand = new WaitCommand(0.5);
+        Command waitcommand = new WaitCommand(0.2);
+        Command waitcommand100 = new WaitCommand(0.1);
 
-        
+        Command extendcommand = new EricAutoExtend(s_ClawLift, -1, true, true, 0, m_timer);
+        Command openclawcommand = new EricAutoClaw(s_Claw, 1, true, 0.3, m_timer);
+        Command stopclawcommand = new EricAutoClaw(s_Claw, 0, true, 0, m_timer);
+        Command retractandlowercommand = new EricAutoRetractAndLower(s_ClawLift, 1, -1, true, false, false, 0, m_timer);
+        Command as0_3command = new AutoSpeed(s_Swerve, 0.3, 0, 0,4, m_timer, false);
+        Command ag0_2command = new AutoGyro(s_Swerve, 0, 0, 0.3, 165, true, false, true);
+
+        Command liftcommand = new EricAutoLift(s_ClawLift, 1, true, true, 0, m_timer);
+
 
         addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(ericTrajectory.getInitialPose())),
-            swerveControllerCommand
+            new InstantCommand(() -> s_Swerve.resetOdometry(ericTrajectory.getInitialPose())).alongWith(waitcommand100),
+            liftcommand, 
+            extendcommand, 
+            openclawcommand, 
+            waitcommand, 
+            stopclawcommand, 
+            retractandlowercommand,
+            as0_3command, 
+            ag0_2command
+
+
+
         );
     }
 }

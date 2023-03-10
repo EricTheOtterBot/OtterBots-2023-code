@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,11 +57,15 @@ public class RobotContainer {
     private final LimeLight a_limelight = new LimeLight();
     private final LimelightVision a_limelightvision = new LimelightVision();
 
+    public final Timer m_timer = new Timer();
+    public double gyroOffset = 0.0;
+
     /* Autos */
-    private final Command auto1 = new dropAndDoNothingAuto(s_Swerve, s_Claw, s_Lift);
-    private final Command auto2 = new exampleAuto(s_Swerve);
-    private final Command auto3 = new testAuto(s_Swerve);
-    private final Command auto4 = new balanceAuto(s_Swerve, s_Claw, s_Lift);
+    private final Command auto1 = new AutoOnePiece(s_Swerve, s_Lift, s_Claw, m_timer);
+    private final Command auto4 = new AutoBalance(s_Swerve, s_Claw, s_Lift, m_timer);
+    private final Command auto3 = new AutoOnePieceNoBacking(s_Swerve, s_Lift, s_Claw, m_timer);
+    private final Command auto6 = new AutoHighCubeL(a_limelightvision, s_Swerve, s_Claw, s_Lift, m_timer);
+    private final Command auto7 = new AutoHighCubeR(a_limelightvision, s_Swerve, s_Claw, s_Lift, m_timer);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {     
@@ -68,13 +73,14 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis)/2, 
-                () -> -driver.getRawAxis(strafeAxis)/2, 
+                () -> -driver.getRawAxis(translationAxis)/1.3, 
+                () -> -driver.getRawAxis(strafeAxis)/1.3, 
                 () -> -driver.getRawAxis(rotationAxis)/2/9*6.75, 
                 () -> robotCentric.getAsBoolean(), 
                 () -> targetLock.getAsBoolean(),
                 () -> a_limelight.getdegRotationToTarget(),
-                () -> driver.getRawAxis(speedControl)
+                () -> driver.getRawAxis(speedControl),
+                () -> gyroOffset
             )
         );
 
@@ -85,7 +91,7 @@ public class RobotContainer {
                 () -> -operator.getRawAxis(liftAxis)
             )
         );
-
+        m_timer.start();
         s_Claw.setDefaultCommand(
             new TeleopClaw(
                 s_Claw,
@@ -100,10 +106,11 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        auto_chooser.setDefaultOption("Use This One", auto1);
-        auto_chooser.addOption("Auto 2", auto2);
-        auto_chooser.addOption("Auto 3", auto3);
-        auto_chooser.addOption("Auto 4", auto4);
+        auto_chooser.setDefaultOption("One Piece No Backing", auto3);
+        auto_chooser.addOption("Auto Balance", auto4);
+        auto_chooser.addOption("One Piece", auto1);
+        auto_chooser.addOption("High Cube L", auto6);
+        auto_chooser.addOption("High Cube R", auto7);
         SmartDashboard.putData(auto_chooser);
     }
 
@@ -115,7 +122,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> this.zeroGyro()));
         // rotateClaw.onTrue(new InstantCommand(() -> CL.rotate_claw()));
         // rotateClawR.onTrue(new InstantCommand(() -> CL.reverse_rotate_claw()));
         // rotateClaw.onFalse(new InstantCommand(() -> CL.stop_claw()));
@@ -128,6 +135,11 @@ public class RobotContainer {
 
     public void zeroGyro() {
         s_Swerve.zeroGyro();
+        gyroOffset = 0.0;
+    }
+
+    public void setPipeline(int pipeline) {
+        a_limelightvision.setPipeline(pipeline);
     }
 
     /**

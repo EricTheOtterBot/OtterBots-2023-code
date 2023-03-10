@@ -21,6 +21,7 @@ public class TeleopLift extends CommandBase {
     public TeleopLift(Lift s_ClawLift, DoubleSupplier extensionSup, DoubleSupplier liftSup) {
         this.s_ClawLift = s_ClawLift;
         addRequirements(s_ClawLift);
+        
         this.extensionSup = extensionSup;
         this.liftSup = liftSup;
     }

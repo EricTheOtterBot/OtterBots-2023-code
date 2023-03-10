@@ -44,7 +44,7 @@ public class Lift extends SubsystemBase {
 
     public void default_control(double extensionVal, double liftVal) {        
         /* Lift */
-        if(s_limitswitchtop.get() == true && liftVal > 0) {
+        if(s_limitswitchtop.get() == false && liftVal > 0) {
             liftVal = 0;
         } 
         if(s_limitswitchbottom.get() == false && liftVal < 0) {
@@ -54,7 +54,7 @@ public class Lift extends SubsystemBase {
         m_lift.set(ControlMode.PercentOutput, liftVal);
 
         /* Extender */
-        if(s_limitswitchback.get() == true && extensionVal > 0) {
+        if(s_limitswitchback.get() == false && extensionVal > 0) {
             extensionVal = 0;
         }
         if(s_limitswitchfront.get() == false && extensionVal < 0) {
@@ -66,10 +66,13 @@ public class Lift extends SubsystemBase {
     }
 
     public void auto_raise() {
-        m_lift.set(ControlMode.PercentOutput, 0.5);
+        m_lift.set(ControlMode.PercentOutput, 1);
+    }
+    public void auto_raise_set_speed(double speed) {
+        m_lift.set(ControlMode.PercentOutput, speed);
     }
     public void auto_stop_raise() {
-        m_lift.set(ControlMode.PercentOutput, 0);
+        m_lift.set(ControlMode.PercentOutput, 0.08);
     }
     public boolean get_top_limit() {
         return s_limitswitchtop.get();
@@ -89,11 +92,14 @@ public class Lift extends SubsystemBase {
     public void auto_stop_extend() {
         m_extender.set(ControlMode.PercentOutput, 0);
     }
+    public void auto_extend_set_speed(double speede) {
+        m_extender.set(ControlMode.PercentOutput, speede);
+    }
     public boolean get_front_limit() {
         return !s_limitswitchfront.get();
     }
     public void auto_retract() {
-        m_extender.set(ControlMode.PercentOutput, 1);
+        m_extender.set(ControlMode.PercentOutput, 0.8);
     }
     public boolean get_back_limit() {
         return s_limitswitchback.get();

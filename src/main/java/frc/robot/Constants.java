@@ -92,7 +92,7 @@ public final class Constants {
           public static final int driveMotorID = 9;
           public static final int angleMotorID = 10;
           public static final int canCoderID = 31;
-          public static final double angleOffset = 38;
+          public static final double angleOffset = 120.64;
           public static final SwerveModuleConstants constants =
               new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -102,7 +102,7 @@ public final class Constants {
           public static final int driveMotorID = 5;
           public static final int angleMotorID = 8;
           public static final int canCoderID = 33;
-          public static final double angleOffset = -64;
+          public static final double angleOffset = -65;
           public static final SwerveModuleConstants constants =
               new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -112,7 +112,7 @@ public final class Constants {
           public static final int driveMotorID = 6;
           public static final int angleMotorID = 7;
           public static final int canCoderID = 30;
-          public static final double angleOffset = -148;
+          public static final double angleOffset = -147.89;
           public static final SwerveModuleConstants constants =
               new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -122,7 +122,7 @@ public final class Constants {
           public static final int driveMotorID = 3;
           public static final int angleMotorID = 4;
           public static final int canCoderID = 32;
-          public static final double angleOffset = 78;
+          public static final double angleOffset = 77.92;
           public static final SwerveModuleConstants constants =
               new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -173,8 +173,8 @@ public final class Constants {
       }
       
       public static class ClawLiftConstants {
-        public static int can_id_extender = 40;
-        public static int can_id_lift = 41;
+        public static int can_id_extender = 40; // 40
+        public static int can_id_lift = 41; // 41
         public static int can_id_claw_rotate = 42;
         public static int can_id_claw_grip = 43;
         public static int dio_top_limit_switch = 0;

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +60,10 @@ public class LimelightVision extends SubsystemBase {
 
   public static Map<String, Integer> tagPipelines;
 
+  private double movingAverageX;
+  private double[] movingArrayX;
+  private int movingAverageIndex;
+
   static {
     tagPipelines = new HashMap<>();
     tagPipelines.put("tag_0", 0);
@@ -95,6 +100,11 @@ public class LimelightVision extends SubsystemBase {
     cam_tag_15.setLEDMode(LedMode.kforceOn);
     cam_tag_15.setCamMode(CamMode.kvision);
     cam_tag_15.setStream(StreamType.kStandard);
+    cam_tag_15.setPipeline(0);
+
+    movingAverageX = 0.0;
+    movingArrayX = new double[5];
+    movingAverageIndex = 0;
 
     if (numCams > 1) {
 
@@ -106,6 +116,10 @@ public class LimelightVision extends SubsystemBase {
 
       // ShuffleboardLL cam_tape_16Display = new ShuffleboardLL(cam_tape_16);
     }
+  }
+
+  public void setPipeline(int pipelineNumber) {
+    cam_tag_15.setPipeline(pipelineNumber);
   }
 
   public Transform3d getCamTransform(LimeLight cam) {
@@ -146,14 +160,37 @@ public class LimelightVision extends SubsystemBase {
 
   }
 
+  public boolean targetExists() {
+    return cam_tag_15.getIsTargetFound();
+  }
+
+  public double getXValue() {
+    return cam_tag_15.getdegRotationToTarget();
+  }
+
+  public double calculateAverage() {
+    double sumOfValues = 0;
+
+    for(int i = 0; i < 5; i++) {
+      sumOfValues += movingArrayX[i];
+    }
+
+    double averageOfValues = sumOfValues / 5;
+    return averageOfValues;
+  }
 
   @Override
   public void periodic() {
     
-     SmartDashboard.putNumber("Limelight tx", cam_tag_15.getdegRotationToTarget());
+    SmartDashboard.putNumber("Limelight tx", cam_tag_15.getdegRotationToTarget());
+    SmartDashboard.putNumber("Limelight tx avg", this.calculateAverage());
+    
+    movingAverageIndex++;
+    if(movingAverageIndex > 4) {
+      movingAverageIndex = 0;
+    }
+    movingArrayX[movingAverageIndex] = cam_tag_15.getdegRotationToTarget();
 
   }
 
-
 }
-

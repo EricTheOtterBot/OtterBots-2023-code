@@ -20,10 +20,11 @@ public class TeleopSwerve extends CommandBase {
     private BooleanSupplier targetLockSup;
     private DoubleSupplier targetRotationSup;
     private DoubleSupplier speedControlSup;
+    private DoubleSupplier gyroOffsetSup;
 
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup,
      DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier targetLockSup,
-     DoubleSupplier targetRotationSup, DoubleSupplier speedControlSup) {
+     DoubleSupplier targetRotationSup, DoubleSupplier speedControlSup, DoubleSupplier gyroOffsetSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -34,6 +35,7 @@ public class TeleopSwerve extends CommandBase {
         this.targetLockSup = targetLockSup;
         this.targetRotationSup = targetRotationSup;
         this.speedControlSup = speedControlSup;
+        this.gyroOffsetSup = gyroOffsetSup;
     }
 
     @Override
@@ -44,15 +46,17 @@ public class TeleopSwerve extends CommandBase {
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         double targetRotation = MathUtil.applyDeadband(targetRotationSup.getAsDouble(), 0.5);
         double speedControlVal = MathUtil.applyDeadband(speedControlSup.getAsDouble(), Constants.stickDeadband);
+        double gyroOffsetVal = gyroOffsetSup.getAsDouble();
 
         if(speedControlVal < 0.4) {
-            speedControlVal = 0.4;
+            speedControlVal = 0.2;
         }   
 
         /* Drive */
         if(targetLockSup.getAsBoolean() == true) {
             rotationVal = targetRotation;
         }
+        s_Swerve.setGyroOffset(gyroOffsetVal);
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed).times(speedControlVal), 
             rotationVal * Constants.Swerve.maxAngularVelocity, 

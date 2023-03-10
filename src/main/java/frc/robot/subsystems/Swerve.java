@@ -22,9 +22,11 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     private final AHRS gyro;
+    private double gyroOffset;
 
     public Swerve() {
         gyro = new AHRS(SPI.Port.kMXP);
+        gyroOffset = 0.0;
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -100,17 +102,27 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(){
         gyro.zeroYaw();
     }
+    public void setGyroOffset(double gyroOffset) {
+        this.gyroOffset = gyroOffset;
+    }
 
     public Rotation2d getYaw() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw() + gyroOffset) : Rotation2d.fromDegrees(gyro.getYaw() + gyroOffset);
     }
 
 
 
 
-    public double getPitch() {
+    public double getRoll() {
         return gyro.getRoll();
     }
+    public double getYaw2() {
+        return gyro.getYaw();
+    }
+    public double getPitch() {
+        return gyro.getPitch();
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
@@ -127,6 +139,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("EncoderReadingBR", mSwerveMods[3].getAbsoluteEncoderRad());
         SmartDashboard.putString("RobotHeading", this.getYaw().toString());
         SmartDashboard.putNumber("Robot Roll", this.getPitch());
+        SmartDashboard.putNumber("Robot Yaw", this.getYaw2());
         
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
