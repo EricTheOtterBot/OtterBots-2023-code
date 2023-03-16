@@ -66,9 +66,13 @@ public class AutoOnePieceNoBacking extends SequentialCommandGroup {
 
         Command liftcommand = new EricAutoLift(s_ClawLift, 1, true, true, 0, m_timer);
 
+        Command as0command3 = new AutoSpeed(s_Swerve, 0, 0, 0, 0, m_timer, false);
+
+        
 
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(ericTrajectory.getInitialPose())).alongWith(waitcommand100),
+            as0command3,
             liftcommand, 
             extendcommand,
             openclawcommand,
