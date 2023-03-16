@@ -44,15 +44,16 @@ public class RobotContainer {
     private final int liftAxis = XboxController.Axis.kRightY.value;
 
     /* Operator Buttons */
-    private final JoystickButton rotateClawF = new JoystickButton(operator, XboxController.Button.kB.value);
-    private final JoystickButton rotateClawR = new JoystickButton(operator, XboxController.Button.kA.value);
-    private final JoystickButton closeClaw = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton openClaw = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton rotateClawF_PB = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton rotateClawR_PB = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton closeClaw_PB = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton openClaw_PB = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private final Lift s_Lift = new Lift();
     private final Claw s_Claw = new Claw();
+    private final Wrist s_Wrist = new Wrist();
 
     private final LimeLight a_limelight = new LimeLight();
     private final LimelightVision a_limelightvision = new LimelightVision();
@@ -92,7 +93,7 @@ public class RobotContainer {
             )
         );
         m_timer.start();
-        s_Claw.setDefaultCommand(
+        /* s_Claw.setDefaultCommand(
             new TeleopClaw(
                 s_Claw,
                 () -> rotateClawF.getAsBoolean(), 
@@ -100,7 +101,7 @@ public class RobotContainer {
                 () -> closeClaw.getAsBoolean(), 
                 () -> openClaw.getAsBoolean()
             )
-        );
+        ); */
 
 
         // Configure the button bindings
@@ -124,11 +125,12 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> this.zeroGyro()));
         // rotateClaw.onTrue(new InstantCommand(() -> CL.rotate_claw()));
-        // rotateClawR.onTrue(new InstantCommand(() -> CL.reverse_rotate_claw()));
-        // rotateClaw.onFalse(new InstantCommand(() -> CL.stop_claw()));
+        rotateClawR_PB.whileTrue(new WristRotate(-1, s_Wrist));
+        rotateClawF_PB.whileTrue(new WristRotate(1, s_Wrist));
+        //rotateClaw.onFalse(new InstantCommand(() -> CL.stop_claw()));
         // rotateClawR.onFalse(new InstantCommand(() -> CL.stop_claw()));
-        // closeClaw.onTrue(new InstantCommand(() -> CL.close_claw()));
-        // openClaw.onTrue(new InstantCommand(() -> CL.open_claw()));
+        closeClaw_PB.whileTrue(new ClawRun(0.8, s_Claw));
+        openClaw_PB.whileTrue(new ClawRun(-0.8, s_Claw));
         // closeClaw.onFalse(new InstantCommand(() -> CL.stop_claw_g()));
         // openClaw.onFalse(new InstantCommand(() -> CL.stop_claw_g()));
     }

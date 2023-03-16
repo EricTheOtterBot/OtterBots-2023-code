@@ -41,7 +41,8 @@ public class EricAutoClaw extends CommandBase {
         if(wantGrip)  {
             s_Claw.auto_grip_set_speed(speedVal);
         } else {
-            s_Claw.auto_turn_set_speed(speedVal);
+            //This will be handeled in other ways
+            //s_Claw.auto_turn_set_speed(speedVal);
         }
     }
 
